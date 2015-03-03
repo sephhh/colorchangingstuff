@@ -1,0 +1,82 @@
+
+
+<!-- import jquery
+import canvas
+
+store canvas size
+draw canvas border
+
+on mouse move
+	set color to blah
+	draw square like blah
+
+on click
+	copy blah -->
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+<style type="text/css">
+body{   
+    margin:0; 
+    padding:0;
+}
+
+</style>
+
+
+</head>
+<body>
+
+
+
+<canvas id="myCanvas"></canvas>
+
+<script>
+
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+var wL = window.innerWidth;
+var wH=window.innerHeight;
+c.style.width = wL + "px";
+c.style.height = wH + "px";
+console.log(wL);
+console.log(wH);
+
+
+
+
+var drawRect = function (color){
+	ctx.fillStyle = color;
+	ctx.fillRect(0, 0, wL, wH)
+};
+var clearRect = function (){
+	ctx.fillStyle = "rgb(256, 256, 256)";
+	ctx.fillRect(0, 0, wL, wH);
+};
+// var smallDim = Math.min(wL, wH);
+// var rgbUnit =(smallDim/256);
+// console.log(rgbUnit);
+var lScale = 256/wL;
+var hScale = 256/wH;
+
+$(document).mousemove(function(event){
+
+	var rgbString = "rgb(0, " + Math.round(event.pageX*lScale) + ", " + Math.round(event.pageY*hScale)+")";
+	clearRect();
+	drawRect(rgbString);
+});
+$(document).click(function(event){
+	var alertString = "rgb(0, " + Math.round(event.pageX*lScale) + ", " + Math.round(event.pageY*hScale)+")";
+	alert(alertString);
+});
+
+</script>
+
+
+
+</body>
+</html>
