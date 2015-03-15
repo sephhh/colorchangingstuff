@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+<style type="text/css">
+body{   
+    margin:0; 
+    padding:0;
+}
+
+</style>
+
+
+</head>
+<body>
+
+
+
+<canvas id="myCanvas" style="border:1px solid #000000;"></canvas>
+
+<script>
+
+
+/*
+Make a piece of text move around the screen and change colors.
+The R value oscillates on its own.
+
+The G and B values change to match the X-Y position of the mouse in the browser.
+
+TODO:
+Make more object oriented
+
+On mouseclick, text snaps to that position
+
+Resize canvas if browser window is resized
+
+Allow user to add more text, new text object
+
+
+
+Text properties:
+move all these into trippyText object, adjust names, adjust code
+
+drawText
+rValue = 0;
+var gValue = 0;
+var bValue
+textSpeed
+rInterval = 5;
+var textX = 0;
+var textY = centerY;
+var xDir = 1;
+var yDir = -1;
+*/
+
+
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+var wL = window.innerWidth;
+var wH=window.innerHeight;
+c.width = wL;
+c.height = wH;
+c.style.width = wL + "px";
+c.style.height = wH + "px";
+
+var drawText = function (text, x, y, fontString, color){
+	ctx.font = fontString;
+	ctx.fillStyle = color;
+	ctx.fillText(text, x, y);
+};
+
+var buildRGB = function (r, g, b){
+	return "rgb("+ r + ", " + g + ", " + b + ")"
+}
+
+var lScale = 256/wL;
+var hScale = 256/wH;
+var rValue = 0;
+var gValue = 0;
+var bValue = 0;
+var rDirection = 1;
+var centerX = Math.round(wL/2);
+var centerY = Math.round(wH/2);
+var textSpeed = 1;
+//console.log(centerY+", " +centerX)
+
+//making the g and b values change to match mouse movement
+
+$(document).mousemove(function(event){
+	gValue = Math.round(event.pageX*lScale);
+	bValue = Math.round(event.pageY*hScale);
+	// console.log(gValue+", " +bValue)
+
+});
+
+//draw text every interval
+
+var intervalLength = 25;
+var rInterval = 5;
+var textX = 0;
+var textY = centerY;
+var xDir = 1;
+var yDir = -1;
+
+
+setInterval(function(){ 
+drawText("Trippppppy Text", textX, textY, "100px Arial", buildRGB(rValue, gValue, bValue));
+	
+//r value oscillates
+	if (rValue > 256 || rValue < 0)
+	{	rDirection = rDirection * -1;
+		
+	}
+		rValue+=(rInterval * rDirection);			
+//move text around
+if (textX > (c.width-440) || textX < 0)
+	{	xDir = xDir * -1;
+		
+	}
+		textX+=xDir*textSpeed;	
+		console.log(textX);
+if (textY > (c.height) || textY < 50)
+	{	yDir = yDir * -1;
+		
+	}
+		textY+=yDir*textSpeed;	
+		console.log(textY);
+}, intervalLength);
+
+
+
+</script>
+
+
+
+</body>
+</html>
