@@ -8,7 +8,6 @@ body{
     margin:0; 
     padding:0;
 }
-
 </style>
 
 
@@ -20,21 +19,14 @@ body{
 <canvas id="myCanvas" style="border:1px solid #000000;"></canvas>
 
 <script>
-
-
 /*
 Make a piece of text move around the screen and change colors.
 The R value oscillates on its own.
-
 The G and B values change to match the X-Y position of the mouse in the browser.
-
 TODO:
 Resize canvas if browser window is resized
-
 Allow user to add more text, new text object
 */
-
-
 var c = document.getElementById("myCanvas");
 var ctx = c.getContext("2d");
 var wL = window.innerWidth;
@@ -45,8 +37,6 @@ c.style.width = wL + "px";
 c.style.height = wH + "px";
 var lScale = 256/wL;
 var hScale = 256/wH;
-
-
 //create trippytext (tt) object
 var tt = {
 	rValue:0,
@@ -60,39 +50,27 @@ var tt = {
 	xDir:1,
 	yDir:-1
 }
-
 tt.drawText = function (text, x, y, fontString, color){
 	ctx.font = fontString;
 	ctx.fillStyle = color;
 	ctx.fillText(text, x, y);
 };
-
 var buildRGB = function (r, g, b){
 	return "rgb("+ r + ", " + g + ", " + b + ")"
 }
-
-
 //making the g and b values change to match mouse movement
-
 $(document).mousemove(function(event){
 	tt.gValue = Math.round(event.pageX*lScale);
 	tt.bValue = Math.round(event.pageY*hScale);
 	// console.log(gValue+", " +bValue)
-
 });
-
-
 //make text x and y move to mouse click location
-
 $(document).click(function(event){
 	tt.textX = event.pageX;
 	tt.textY = event.pageY;
 });
-
 //draw text every interval
-
 var intervalLength = 25;
-
 setInterval(function(){ 
 tt.drawText("Trippppppy Text", tt.textX, tt.textY, "100px Arial", buildRGB(tt.rValue, tt.gValue, tt.bValue));
 	
@@ -116,9 +94,6 @@ if (tt.textY > (c.height) || tt.textY < 50)
 		tt.textY+=tt.yDir*tt.textSpeed;	
 		// console.log(tt.textY);
 }, intervalLength);
-
-
-
 </script>
 
 
