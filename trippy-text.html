@@ -29,29 +29,9 @@ The R value oscillates on its own.
 The G and B values change to match the X-Y position of the mouse in the browser.
 
 TODO:
-Make more object oriented
-
-On mouseclick, text snaps to that position
-
 Resize canvas if browser window is resized
 
 Allow user to add more text, new text object
-
-
-
-Text properties:
-move all these into trippyText object, adjust names, adjust code
-
-drawText
-rValue = 0;
-var gValue = 0;
-var bValue
-textSpeed
-rInterval = 5;
-var textX = 0;
-var textY = centerY;
-var xDir = 1;
-var yDir = -1;
 */
 
 
@@ -63,8 +43,25 @@ c.width = wL;
 c.height = wH;
 c.style.width = wL + "px";
 c.style.height = wH + "px";
+var lScale = 256/wL;
+var hScale = 256/wH;
 
-var drawText = function (text, x, y, fontString, color){
+
+//create trippytext (tt) object
+var tt = {
+	rValue:0,
+	gValue:0,
+	bValue:0,
+	rDirection:1,
+	textSpeed:1,
+	rInterval:5,
+	textX:10,
+	textY:100,
+	xDir:1,
+	yDir:-1
+}
+
+tt.drawText = function (text, x, y, fontString, color){
 	ctx.font = fontString;
 	ctx.fillStyle = color;
 	ctx.fillText(text, x, y);
@@ -74,58 +71,50 @@ var buildRGB = function (r, g, b){
 	return "rgb("+ r + ", " + g + ", " + b + ")"
 }
 
-var lScale = 256/wL;
-var hScale = 256/wH;
-var rValue = 0;
-var gValue = 0;
-var bValue = 0;
-var rDirection = 1;
-var centerX = Math.round(wL/2);
-var centerY = Math.round(wH/2);
-var textSpeed = 1;
-//console.log(centerY+", " +centerX)
 
 //making the g and b values change to match mouse movement
 
 $(document).mousemove(function(event){
-	gValue = Math.round(event.pageX*lScale);
-	bValue = Math.round(event.pageY*hScale);
+	tt.gValue = Math.round(event.pageX*lScale);
+	tt.bValue = Math.round(event.pageY*hScale);
 	// console.log(gValue+", " +bValue)
 
+});
+
+
+//make text x and y move to mouse click location
+
+$(document).click(function(event){
+	tt.textX = event.pageX;
+	tt.textY = event.pageY;
 });
 
 //draw text every interval
 
 var intervalLength = 25;
-var rInterval = 5;
-var textX = 0;
-var textY = centerY;
-var xDir = 1;
-var yDir = -1;
-
 
 setInterval(function(){ 
-drawText("Trippppppy Text", textX, textY, "100px Arial", buildRGB(rValue, gValue, bValue));
+tt.drawText("Trippppppy Text", tt.textX, tt.textY, "100px Arial", buildRGB(tt.rValue, tt.gValue, tt.bValue));
 	
 //r value oscillates
-	if (rValue > 256 || rValue < 0)
-	{	rDirection = rDirection * -1;
+	if (tt.rValue > 256 || tt.rValue < 0)
+	{	tt.rDirection = tt.rDirection * -1;
 		
 	}
-		rValue+=(rInterval * rDirection);			
+		tt.rValue+=(tt.rInterval * tt.rDirection);			
 //move text around
-if (textX > (c.width-440) || textX < 0)
-	{	xDir = xDir * -1;
+if (tt.textX > (c.width-440) || tt.textX < 0)
+	{	tt.xDir = tt.xDir * -1;
 		
 	}
-		textX+=xDir*textSpeed;	
-		console.log(textX);
-if (textY > (c.height) || textY < 50)
-	{	yDir = yDir * -1;
+		tt.textX+=tt.xDir*tt.textSpeed;	
+		// console.log(tt.textX);
+if (tt.textY > (c.height) || tt.textY < 50)
+	{	tt.yDir = tt.yDir * -1;
 		
 	}
-		textY+=yDir*textSpeed;	
-		console.log(textY);
+		tt.textY+=tt.yDir*tt.textSpeed;	
+		// console.log(tt.textY);
 }, intervalLength);
 
 
