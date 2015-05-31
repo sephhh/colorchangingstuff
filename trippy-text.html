@@ -23,8 +23,7 @@ body{
 Make a piece of text move around the screen and change colors.
 The R value oscillates on its own.
 The G and B values change to match the X-Y position of the mouse in the browser.
-TODO:
-Allow user to add more text, new text object
+Press enter to change the text
 */
 $(document).ready(function(){
 	// set up initial variables
@@ -38,7 +37,6 @@ $(document).ready(function(){
 	c.style.height = wH + "px";
 	var lScale = 256/wL;
 	var hScale = 256/wH;
-
 	//create trippytext (tt) object
 	var tt = {
 		rValue:0,
@@ -50,13 +48,17 @@ $(document).ready(function(){
 		textX:10,
 		textY:100,
 		xDir:1,
-		yDir:-1
+		yDir:-1,
+    text:"Trippppppy Text"
 	}
 	tt.drawText = function (text, x, y, fontString, color){
 		ctx.font = fontString;
 		ctx.fillStyle = color;
 		ctx.fillText(text, x, y);
 	};
+  tt.xBuffer = function(){
+    return this.text.length*40;
+  }
 	var buildRGB = function (r, g, b){
 		return "rgb("+ r + ", " + g + ", " + b + ")"
 	}
@@ -66,17 +68,23 @@ $(document).ready(function(){
 		tt.bValue = Math.round(event.pageY*hScale);
 		// console.log(gValue+", " +bValue)
 	});
-
 	//make text x and y move to mouse click location
 	$(document).click(function(event){
-		tt.textX = event.pageX;
-		tt.textY = event.pageY;
+		if (event.pageX > c.width-tt.xBuffer()){
+       tt.textX = c.width-tt.xBuffer();
+    }else{
+       tt.textX = event.pageX;
+    }
+    if (event.pageY <= 50){
+       tt.textY = 50;
+    }else{
+       tt.textY = event.pageY;
+    }
 	});
-
 	//draw text every interval
 	var intervalLength = 25;
 	setInterval(function(){ 
-		tt.drawText("Trippppppy Text", tt.textX, tt.textY, "100px Arial", buildRGB(tt.rValue, tt.gValue, tt.bValue));
+		tt.drawText(tt.text, tt.textX, tt.textY, "100px Arial", buildRGB(tt.rValue, tt.gValue, tt.bValue));
 			
 		//r value oscillates
 		if (tt.rValue > 256 || tt.rValue < 0)
@@ -84,14 +92,11 @@ $(document).ready(function(){
 			tt.rDirection = tt.rDirection * -1;
 		}
 			tt.rValue+=(tt.rInterval * tt.rDirection);
-
 		//move text around
-		if (tt.textX > (c.width-440) || tt.textX < 0)
-			{	
+		if (tt.textX > (c.width-tt.xBuffer()) || tt.textX < 0){
 				tt.xDir = tt.xDir * -1;
 			}
 				tt.textX+=tt.xDir*tt.textSpeed;
-
 		// console.log(tt.textX);
 		if (tt.textY > (c.height) || tt.textY < 50)
 			{	
@@ -100,7 +105,6 @@ $(document).ready(function(){
 				tt.textY+=tt.yDir*tt.textSpeed;	
 	// console.log(tt.textY);
 	}, intervalLength);
-
 	// Change canvas size on window resize
 	$(window).resize(function() {
 		wL = $(window).width();
@@ -111,7 +115,15 @@ $(document).ready(function(){
 		c.style.height = wH + "px";
 		lScale = 256/wL;
 		hScale = 256/wH;
+    tt.textX = 100;
+    tt.textY = 100;
 	});
+  $(window).keydown(function(e) {
+    if (e.which === 13){
+      tt.text = prompt("Enter some trippy text", tt.text);
+    };
+});
+  
 
 });
 </script>
