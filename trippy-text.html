@@ -26,51 +26,52 @@ The G and B values change to match the X-Y position of the mouse in the browser.
 Press enter to change the text
 */
 $(document).ready(function(){
-	// set up initial variables
-	var c = document.getElementById("myCanvas");
-	var ctx = c.getContext("2d");
-	var wL = $(window).width();
-	var wH = $(window).height();
-	c.width = wL;
-	c.height = wH;
-	c.style.width = wL + "px";
-	c.style.height = wH + "px";
-	var lScale = 256/wL;
-	var hScale = 256/wH;
-	//create trippytext (tt) object
-	var tt = {
-		rValue:0,
-		gValue:0,
-		bValue:0,
-		rDirection:1,
-		textSpeed:1,
-		rInterval:5,
-		textX:10,
-		textY:100,
-		xDir:1,
-		yDir:-1,
-    text:"Trippppppy Text"
-	}
-	tt.drawText = function (text, x, y, fontString, color){
-		ctx.font = fontString;
-		ctx.fillStyle = color;
-		ctx.fillText(text, x, y);
-	};
+  // set up initial variables
+  var c = document.getElementById("myCanvas");
+  var ctx = c.getContext("2d");
+  var wL = $(window).width();
+  var wH = $(window).height();
+  c.width = wL;
+  c.height = wH;
+  c.style.width = wL + "px";
+  c.style.height = wH + "px";
+  var lScale = 256/wL;
+  var hScale = 256/wH;
+  //create trippytext (tt) object
+  var tt = {
+    rValue:0,
+    gValue:0,
+    bValue:0,
+    bDirection:1,
+    textSpeed:1,
+    bInterval:5,
+    textX:10,
+    textY:100,
+    xDir:1,
+    yDir:-1,
+    text:"Trippppy Text"
+  }
+  tt.drawText = function (text, x, y, fontString, color){
+    ctx.font = fontString;
+    ctx.fillStyle = color;
+    console.log(color)
+    ctx.fillText(text, x, y);
+  };
   tt.xBuffer = function(){
     return this.text.length*40;
   }
-	var buildRGB = function (r, g, b){
-		return "rgb("+ r + ", " + g + ", " + b + ")"
-	}
-	//making the g and b values change to match mouse movement
-	$(document).mousemove(function(event){
-		tt.gValue = Math.round(event.pageX*lScale);
-		tt.bValue = Math.round(event.pageY*hScale);
-		// console.log(gValue+", " +bValue)
-	});
-	//make text x and y move to mouse click location
-	$(document).click(function(event){
-		if (event.pageX > c.width-tt.xBuffer()){
+  var buildRGB = function (r, g, b){
+    return "rgb("+ r + ", " + g + ", " + b + ")"
+  }
+  //making the r and g values change to match mouse movement
+  $(document).mousemove(function(event){
+    tt.gValue = Math.round(event.pageX*lScale);
+    tt.rValue = Math.round(event.pageY*hScale);
+    //console.log(tt.gValue+", " +tt.rValue)
+  });
+  //make text x and y move to mouse click location
+  $(document).click(function(event){
+    if (event.pageX > c.width-tt.xBuffer()){
        tt.textX = c.width-tt.xBuffer();
     }else{
        tt.textX = event.pageX;
@@ -80,49 +81,48 @@ $(document).ready(function(){
     }else{
        tt.textY = event.pageY;
     }
-	});
-	//draw text every interval
-	var intervalLength = 25;
-	setInterval(function(){ 
-		tt.drawText(tt.text, tt.textX, tt.textY, "100px Arial", buildRGB(tt.rValue, tt.gValue, tt.bValue));
-			
-		//r value oscillates
-		if (tt.rValue > 256 || tt.rValue < 0)
-		{	
-			tt.rDirection = tt.rDirection * -1;
-		}
-			tt.rValue+=(tt.rInterval * tt.rDirection);
-		//move text around
-		if (tt.textX > (c.width-tt.xBuffer()) || tt.textX < 0){
-				tt.xDir = tt.xDir * -1;
-			}
-				tt.textX+=tt.xDir*tt.textSpeed;
-		// console.log(tt.textX);
-		if (tt.textY > (c.height) || tt.textY < 50)
-			{	
-				tt.yDir = tt.yDir * -1;
-			}
-				tt.textY+=tt.yDir*tt.textSpeed;	
-	// console.log(tt.textY);
-	}, intervalLength);
-	// Change canvas size on window resize
-	$(window).resize(function() {
-		wL = $(window).width();
-		wH = $(window).height();
-		c.width = wL;
-		c.height = wH;
-		c.style.width = wL + "px";
-		c.style.height = wH + "px";
-		lScale = 256/wL;
-		hScale = 256/wH;
+  });
+  //draw text every interval
+  var intervalLength = 25;
+  setInterval(function(){ 
+    tt.drawText(tt.text, tt.textX, tt.textY, "100px Arial", buildRGB(tt.rValue, tt.gValue, tt.bValue));
+      
+    //b value oscillates
+    if (tt.bValue > 256 || tt.bValue < 0){ 
+      tt.bDirection = tt.bDirection * -1;
+    }
+    tt.bValue+=(tt.bInterval * tt.bDirection);
+    
+    //move text around
+    if (tt.textX > (c.width-tt.xBuffer()) || tt.textX < 0){
+      tt.xDir = tt.xDir * -1;
+    }
+    tt.textX+=tt.xDir*tt.textSpeed;
+    // console.log(tt.textX);
+    if (tt.textY > (c.height) || tt.textY < 50){ 
+      tt.yDir = tt.yDir * -1;
+    }
+    tt.textY+=tt.yDir*tt.textSpeed;
+ 
+  }, intervalLength);
+  // Change canvas size on window resize
+  $(window).resize(function() {
+    wL = $(window).width();
+    wH = $(window).height();
+    c.width = wL;
+    c.height = wH;
+    c.style.width = wL + "px";
+    c.style.height = wH + "px";
+    lScale = 256/wL;
+    hScale = 256/wH;
     tt.textX = 100;
     tt.textY = 100;
-	});
+  });
   $(window).keydown(function(e) {
     if (e.which === 13){
       tt.text = prompt("Enter some trippy text", tt.text);
     };
-});
+  });
   
 
 });
